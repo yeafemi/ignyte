@@ -2,14 +2,17 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build_site:
@@ -24,7 +27,7 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
       - name: Build
@@ -33,18 +36,64 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
-      - name: SPA Routing Hack (404.html)
-        run: cp .output/public/index.html .output/public/404.html
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+      - name: Generate Static Entry Point
+        run: |
+          # TanStack Start builds to dist/client but doesn't always include index.html for static hosts
+          # We manually create one that points to the generated assets
+          CDIR="dist/client"
+          mkdir -p $CDIR
+          
+          # Find the main entry files
+          # Note: The names contain hashes, so we use wildcards
+          MAIN_JS=$(find $CDIR/assets -name "index-*.js" | head -n 1)
+          MAIN_CSS=$(find $CDIR/assets -name "styles-*.css" | head -n 1)
+          
+          if [ -z "$MAIN_JS" ]; then
+            echo "Error: Could not find main JS bundle"
+            exit 1
+          fi
+          
+          JS_PATH="./assets/$(basename $MAIN_JS)"
+          CSS_PATH="./assets/$(basename $MAIN_CSS)"
+          
+          echo "Generating index.html with JS: $JS_PATH and CSS: $CSS_PATH"
+          
+          cat <<EOF > $CDIR/index.html
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>IGNYTE — Igniting Brands. Driving Growth.</title>
+            <link rel="stylesheet" href="$CSS_PATH">
+            <script type="module">
+              // Simple splash screen while JS loads
+              document.addEventListener('DOMContentLoaded', () => {
+                const root = document.getElementById('root');
+                if (root && !root.innerHTML) {
+                  root.innerHTML = '<div style="height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1a1a;color:white;font-family:sans-serif;">Loading IGNYTE...</div>';
+                }
+              });
+            </script>
+          </head>
+          <body>
+            <div id="root"></div>
+            <script type="module" src="$JS_PATH"></script>
+          </body>
+          </html>
+          EOF
+          
+          # Copy to 404.html for SPA routing support
+          cp $CDIR/index.html $CDIR/404.html
+          
+          # Ensure there is a .nojekyll file
+          touch $CDIR/.nojekyll
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          # TanStack Start output is usually in .output/public
-          path: '.output/public'
+          path: 'dist/client'
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

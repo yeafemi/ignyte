@@ -1,11 +1,13 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  // Set base for GitHub Pages (e.g., /ignyte/)
+  // Set base for GitHub Pages
   vite: {
     base: "/ignyte/",
+    build: {
+      outDir: "dist",
+    }
   },
-  tanstackStart: {
-    server: { entry: "server" },
-  },
+  // Explicitly disable Cloudflare to avoid build issues
+  cloudflare: false,
 });
