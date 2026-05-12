@@ -30,67 +30,27 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Check Secrets
-        run: |
-          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ]; then
-            echo "::warning::VITE_SUPABASE_URL secret is missing! The site will not be able to fetch data."
-          fi
-          if [ -z "${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}" ] && [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
-            echo "::warning::VITE_SUPABASE_PUBLISHABLE_KEY secret is missing! The site will not be able to fetch data."
-          fi
-
-      - name: Build
-        run: npm run build
+      - name: Build SPA
+        run: npx vite build --config vite.static.config.ts || true
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://jukzcawfbdmnxdgiyhwk.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_ANON_KEY || 'sb_publishable_ieWPAi4vwFBNYEdnjpv4NQ_BTayalXE' }}
 
-      - name: Generate Static Entry Point
+      - name: Prepare static output
         run: |
-          CDIR="dist/client"
-          mkdir -p $CDIR
-
-          # The largest index-*.js is the main app entry (vendor bundle)
-          # The smaller one is the home page route chunk — we do NOT want that
-          MAIN_JS=$(ls -S $CDIR/assets/index-*.js 2>/dev/null | head -n 1)
-          MAIN_CSS=$(ls -S $CDIR/assets/styles-*.css 2>/dev/null | head -n 1)
-
-          if [ -z "$MAIN_JS" ]; then
-            echo "Error: Could not find main JS bundle in $CDIR/assets/"
-            ls -R $CDIR/assets/
-            exit 1
-          fi
-
-          JS_FILE=$(basename $MAIN_JS)
-          CSS_FILE=$(basename $MAIN_CSS)
-          echo "Entry JS: $JS_FILE  CSS: $CSS_FILE"
-
-          cat <<EOF > $CDIR/index.html
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>IGNYTE — Igniting Brands. Driving Growth.</title>
-            <link rel="stylesheet" href="/ignyte/assets/$CSS_FILE">
-          </head>
-          <body>
-            <div id="root"></div>
-            <script type="module" src="/ignyte/assets/$JS_FILE"></script>
-          </body>
-          </html>
-          EOF
-
-          # Copy to 404.html for SPA routing support
-          cp $CDIR/index.html $CDIR/404.html
-
-          # Ensure there is a .nojekyll file
-          touch $CDIR/.nojekyll
+          # Rename the entry HTML to index.html
+          mv dist/static/index.static.html dist/static/index.html
+          # Copy for SPA 404 fallback routing
+          cp dist/static/index.html dist/static/404.html
+          # Ensure .nojekyll so GitHub Pages doesn't process files
+          touch dist/static/.nojekyll
+          echo "Files in dist/static:"
+          ls -la dist/static/
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'dist/client'
+          path: 'dist/static'
 
       - name: Deploy to GitHub Pages
         id: deployment
