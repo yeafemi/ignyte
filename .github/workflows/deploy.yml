@@ -47,26 +47,24 @@ jobs:
 
       - name: Generate Static Entry Point
         run: |
-          # TanStack Start builds to dist/client but doesn't always include index.html for static hosts
-          # We manually create one that points to the generated assets
           CDIR="dist/client"
           mkdir -p $CDIR
-          
-          # Find the main entry files by sorting by size (largest is likely the entry point)
+
+          # The largest index-*.js is the main app entry (vendor bundle)
+          # The smaller one is the home page route chunk — we do NOT want that
           MAIN_JS=$(ls -S $CDIR/assets/index-*.js 2>/dev/null | head -n 1)
           MAIN_CSS=$(ls -S $CDIR/assets/styles-*.css 2>/dev/null | head -n 1)
-          
+
           if [ -z "$MAIN_JS" ]; then
             echo "Error: Could not find main JS bundle in $CDIR/assets/"
             ls -R $CDIR/assets/
             exit 1
           fi
-          
-          JS_PATH="/ignyte/assets/$(basename $MAIN_JS)"
-          CSS_PATH="/ignyte/assets/$(basename $MAIN_CSS)"
-          
-          echo "Generating index.html with JS: $JS_PATH and CSS: $CSS_PATH"
-          
+
+          JS_FILE=$(basename $MAIN_JS)
+          CSS_FILE=$(basename $MAIN_CSS)
+          echo "Entry JS: $JS_FILE  CSS: $CSS_FILE"
+
           cat <<EOF > $CDIR/index.html
           <!DOCTYPE html>
           <html lang="en">
@@ -74,27 +72,18 @@ jobs:
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>IGNYTE — Igniting Brands. Driving Growth.</title>
-            <link rel="stylesheet" href="$CSS_PATH">
-            <script type="module">
-              // Simple splash screen while JS loads
-              document.addEventListener('DOMContentLoaded', () => {
-                const root = document.getElementById('root');
-                if (root && !root.innerHTML) {
-                  root.innerHTML = '<div style="height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1a1a;color:white;font-family:sans-serif;">Loading IGNYTE...</div>';
-                }
-              });
-            </script>
+            <link rel="stylesheet" href="/ignyte/assets/$CSS_FILE">
           </head>
           <body>
             <div id="root"></div>
-            <script type="module" src="$JS_PATH"></script>
+            <script type="module" src="/ignyte/assets/$JS_FILE"></script>
           </body>
           </html>
           EOF
-          
+
           # Copy to 404.html for SPA routing support
           cp $CDIR/index.html $CDIR/404.html
-          
+
           # Ensure there is a .nojekyll file
           touch $CDIR/.nojekyll
 
