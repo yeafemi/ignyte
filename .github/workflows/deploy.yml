@@ -45,7 +45,7 @@ jobs:
           
           # Find the main entry files
           # Note: The names contain hashes, so we use wildcards
-          MAIN_JS=$(find $CDIR/assets -name "index-*.js" | head -n 1)
+          MAIN_JS=$(ls -S $CDIR/assets/index-*.js | head -n 1)
           MAIN_CSS=$(find $CDIR/assets -name "styles-*.css" | head -n 1)
           
           if [ -z "$MAIN_JS" ]; then
