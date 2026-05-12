@@ -53,8 +53,8 @@ jobs:
             exit 1
           fi
           
-          JS_PATH="./assets/$(basename $MAIN_JS)"
-          CSS_PATH="./assets/$(basename $MAIN_CSS)"
+          JS_PATH="/ignyte/assets/$(basename $MAIN_JS)"
+          CSS_PATH="/ignyte/assets/$(basename $MAIN_CSS)"
           
           echo "Generating index.html with JS: $JS_PATH and CSS: $CSS_PATH"
           
