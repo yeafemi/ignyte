@@ -3,6 +3,12 @@ import { iconMap } from "@/lib/icons";
 import { useSection } from "@/lib/content";
 import { ArrowRight, Globe, Quote, Sparkles, MessageSquare } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import hero1 from "@/assets/hero/website_dev_hero_1778579748736.png";
+import hero2 from "@/assets/hero/meta_config_hero_1778580178884.png";
+import hero3 from "@/assets/hero/video_ads_hero_1778580267131.png";
+import hero4 from "@/assets/hero/graphic_design_hero_1778580285013.png";
+import hero5 from "@/assets/hero/branding_hero_1778580527613.png";
+import hero6 from "@/assets/hero/maintenance_hero_1778580693461.png";
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState } from "react";
 
@@ -27,14 +33,7 @@ const serviceColors = [
   "text-brand-red",
 ];
 
-const heroImages = [
-  "/website_dev_hero_1778579748736.png",
-  "/meta_config_hero_1778580178884.png",
-  "/video_ads_hero_1778580267131.png",
-  "/graphic_design_hero_1778580285013.png",
-  "/branding_hero_1778580527613.png",
-  "/maintenance_hero_1778580693461.png",
-];
+const heroImages = [hero1, hero2, hero3, hero4, hero5, hero6];
 
 function HeroSlider() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 30 });
@@ -65,7 +64,7 @@ function HeroSlider() {
   };
 
   return (
-    <div className="relative w-full max-w-md lg:max-w-lg animate-in fade-in zoom-in-95 duration-1000 delay-500 fill-mode-both animate-float">
+    <div className="relative w-full max-w-md lg:max-w-lg animate-float">
       <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-brand-cyan/20 blur-3xl animate-pulse" />
       <div className="absolute -right-12 -bottom-12 h-64 w-64 rounded-full bg-brand-magenta/20 blur-3xl animate-pulse delay-700" />
       
@@ -116,7 +115,7 @@ function Index() {
           alt=""
           width={1920}
           height={1080}
-          className="absolute inset-0 h-full w-full object-cover opacity-20 grayscale brightness-50"
+          className="absolute inset-0 h-full w-full object-cover opacity-30 grayscale brightness-75"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/60 to-background" />
         <div className="absolute inset-x-0 top-0 h-[600px] [background:var(--gradient-radial-glow)] opacity-50" />
