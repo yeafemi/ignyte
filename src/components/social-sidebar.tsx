@@ -1,4 +1,5 @@
 import { Facebook, Linkedin, Instagram, MessageCircle, Music2 } from "lucide-react";
+import tiktokLogo from "../../public/tiktok-logo.png";
 
 const socialLinks = [
   {
@@ -29,7 +30,7 @@ const socialLinks = [
     name: "TikTok",
     url: "https://www.tiktok.com/@ign.yte",
     icon: Music2,
-    image: "/tiktok-logo.png",
+    image: tiktokLogo,
     color: "bg-black",
   },
 ];
