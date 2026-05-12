@@ -30,6 +30,15 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Check Secrets
+        run: |
+          if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ]; then
+            echo "::warning::VITE_SUPABASE_URL secret is missing! The site will not be able to fetch data."
+          fi
+          if [ -z "${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}" ] && [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
+            echo "::warning::VITE_SUPABASE_PUBLISHABLE_KEY secret is missing! The site will not be able to fetch data."
+          fi
+
       - name: Build
         run: npm run build
         env:
@@ -43,13 +52,13 @@ jobs:
           CDIR="dist/client"
           mkdir -p $CDIR
           
-          # Find the main entry files
-          # Note: The names contain hashes, so we use wildcards
-          MAIN_JS=$(ls -S $CDIR/assets/index-*.js | head -n 1)
-          MAIN_CSS=$(find $CDIR/assets -name "styles-*.css" | head -n 1)
+          # Find the main entry files by sorting by size (largest is likely the entry point)
+          MAIN_JS=$(ls -S $CDIR/assets/index-*.js 2>/dev/null | head -n 1)
+          MAIN_CSS=$(ls -S $CDIR/assets/styles-*.css 2>/dev/null | head -n 1)
           
           if [ -z "$MAIN_JS" ]; then
-            echo "Error: Could not find main JS bundle"
+            echo "Error: Could not find main JS bundle in $CDIR/assets/"
+            ls -R $CDIR/assets/
             exit 1
           fi
           
