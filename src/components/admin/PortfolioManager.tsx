@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { 
   Search, 
   Plus, 
@@ -61,12 +63,61 @@ interface PortfolioManagerProps {
 export function PortfolioManager({ items, onSave }: PortfolioManagerProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [newItem, setNewItem] = useState<PortfolioItem>({
     title: "",
     tag: "Business Advisory Services (BAS)",
     client: "",
     status: "Published",
   });
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Limit to 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File is too large. Maximum size allowed is 5MB.");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      // Upload to 'portfolio' storage bucket
+      const { data, error } = await supabase.storage
+        .from("Portfolio")
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) {
+        if (error.message.includes("Bucket not found")) {
+          throw new Error("Storage bucket 'portfolio' not found. Please create a public bucket named 'portfolio' in your Supabase Dashboard Storage section.");
+        }
+        throw error;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from("Portfolio")
+        .getPublicUrl(filePath);
+
+      setNewItem(prev => ({ ...prev, coverImage: publicUrl }));
+      toast.success("Image uploaded successfully!");
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      toast.error(err.message || "Failed to upload image. Make sure a public 'portfolio' storage bucket exists.");
+    } finally {
+      setUploading(false);
+      // Reset input value to allow uploading the same file again
+      e.target.value = "";
+    }
+  };
 
   const filteredItems = items.filter(item => 
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -241,8 +292,21 @@ export function PortfolioManager({ items, onSave }: PortfolioManagerProps) {
                     value={newItem.coverImage || ""}
                     onChange={(e) => setNewItem({...newItem, coverImage: e.target.value})}
                   />
-                  <Button variant="outline" className="rounded-xl border-border/40 h-11 hover:bg-white/5">
-                    <Upload className="mr-2 h-4 w-4" /> Upload
+                  <input 
+                    type="file" 
+                    id="portfolio-image-upload" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={handleImageUpload}
+                  />
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    className="rounded-xl border-border/40 h-11 hover:bg-white/5"
+                    onClick={() => document.getElementById("portfolio-image-upload")?.click()}
+                    disabled={uploading}
+                  >
+                    <Upload className="mr-2 h-4 w-4" /> {uploading ? "Uploading..." : "Upload"}
                   </Button>
                 </div>
               </div>
@@ -274,15 +338,15 @@ export function PortfolioManager({ items, onSave }: PortfolioManagerProps) {
             placeholder="Search portfolios by title or category..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 h-12 rounded-2xl bg-card/30 border-border/40 backdrop-blur-xl focus:border-brand-cyan/50 transition-all shadow-inner"
+            className="pl-12 h-12 rounded-2xl bg-card/90 border-border/40 focus:border-brand-cyan/50 transition-all shadow-inner"
           />
         </div>
-        <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-border/40 bg-card/30 backdrop-blur-xl hover:bg-white/5 transition-all">
+        <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-border/40 bg-card/90 hover:bg-white/5 transition-all">
           <Filter className="h-5 w-5" />
         </Button>
       </div>
 
-      <div className="rounded-3xl border border-border/40 bg-card/30 backdrop-blur-xl overflow-hidden shadow-elegant transition-all">
+      <div className="rounded-3xl border border-border/40 bg-card/90 overflow-hidden shadow-elegant transition-all">
         <Table>
           <TableHeader>
             <TableRow className="border-border/40 bg-white/5 hover:bg-white/5 transition-none">

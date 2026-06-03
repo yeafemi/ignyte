@@ -46,25 +46,11 @@ function AdminPage() {
     if (!loading && !user) nav({ to: "/login" });
   }, [user, loading, nav]);
 
-  if (loading || isLoading) {
+  if (loading) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center bg-background text-muted-foreground animate-pulse">
         <Globe className="h-12 w-12 mb-4 text-brand-cyan animate-spin-slow" />
         <p className="font-display text-lg font-bold tracking-tight">Initializing Dashboard…</p>
-      </div>
-    );
-  }
-
-  if (contentError) {
-    return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-background p-6 text-center">
-        <h1 className="font-display text-3xl font-bold text-brand-red">Configuration Error</h1>
-        <p className="mt-4 max-w-md text-muted-foreground">
-          There was an error loading the site content from Supabase. Please check your database connection and environment variables.
-        </p>
-        <code className="mt-4 p-4 rounded-xl bg-card border border-border text-xs text-brand-red">
-          {contentError instanceof Error ? contentError.message : "Unknown error"}
-        </code>
       </div>
     );
   }
@@ -99,6 +85,29 @@ function AdminPage() {
             </Link>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-background text-muted-foreground animate-pulse">
+        <Globe className="h-12 w-12 mb-4 text-brand-cyan animate-spin-slow" />
+        <p className="font-display text-lg font-bold tracking-tight">Initializing Dashboard…</p>
+      </div>
+    );
+  }
+
+  if (contentError) {
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-background p-6 text-center">
+        <h1 className="font-display text-3xl font-bold text-brand-red">Configuration Error</h1>
+        <p className="mt-4 max-w-md text-muted-foreground">
+          There was an error loading the site content from Supabase. Please check your database connection and environment variables.
+        </p>
+        <code className="mt-4 p-4 rounded-xl bg-card border border-border text-xs text-brand-red">
+          {contentError instanceof Error ? contentError.message : "Unknown error"}
+        </code>
       </div>
     );
   }

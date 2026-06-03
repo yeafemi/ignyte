@@ -103,11 +103,11 @@ export function ContactList() {
           placeholder="Search leads by name, email, or subject..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-12 h-12 rounded-2xl bg-card/30 border-border/40 backdrop-blur-xl focus:border-brand-magenta/50 transition-all shadow-inner"
+          className="pl-12 h-12 rounded-2xl bg-card/90 border-border/40 focus:border-brand-magenta/50 transition-all shadow-inner"
         />
       </div>
 
-      <div className="rounded-3xl border border-border/40 bg-card/30 backdrop-blur-xl overflow-hidden shadow-elegant">
+      <div className="rounded-3xl border border-border/40 bg-card/90 overflow-hidden shadow-elegant">
         <Table>
           <TableHeader>
             <TableRow className="border-border/40 bg-white/5">

@@ -18,12 +18,12 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const nav = useNavigate();
 
   useEffect(() => {
-    if (user) nav({ to: "/admin" });
-  }, [user, nav]);
+    if (!loading && user) nav({ to: "/admin" });
+  }, [user, loading, nav]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -72,7 +72,7 @@ function LoginPage() {
           </Link>
         </div>
 
-        <div className="rounded-[40px] border border-border/40 bg-card/30 p-10 backdrop-blur-3xl shadow-elegant relative overflow-hidden group">
+        <div className="rounded-[40px] border border-border/40 bg-card/90 p-10 shadow-elegant relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
           
           <div className="relative mb-10">

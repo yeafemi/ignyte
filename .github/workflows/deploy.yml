@@ -35,11 +35,10 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://jukzcawfbdmnxdgiyhwk.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_ANON_KEY || 'sb_publishable_ieWPAi4vwFBNYEdnjpv4NQ_BTayalXE' }}
+          VITE_BASE_PATH: "/ignyte/"
 
       - name: Prepare static output
         run: |
-          # Rename the entry HTML to index.html
-          mv dist/static/index.static.html dist/static/index.html
           # Copy for SPA 404 fallback routing
           cp dist/static/index.html dist/static/404.html
           # Ensure .nojekyll so GitHub Pages doesn't process files

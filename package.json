@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
+    "dev:static": "vite dev --config vite.static.config.ts",
     "build": "vite build",
-    "build:static": "vite build --mode static",
+    "build:static": "vite build --config vite.static.config.ts",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",

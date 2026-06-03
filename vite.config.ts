@@ -1,9 +1,9 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  // Set base for GitHub Pages
+  // Set base for Hostinger
   vite: {
-    base: "/ignyte/",
+    base: "/",
     build: {
       outDir: "dist",
     }

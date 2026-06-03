@@ -12,7 +12,6 @@ import {
 import appCss from "../styles.css?url";
 import { SiteNav, SiteFooter } from "@/components/site-chrome";
 import { Toaster } from "@/components/ui/sonner";
-import { CursorTracker } from "@/components/cursor-tracker";
 import { SocialSidebar } from "@/components/social-sidebar";
 
 function NotFoundComponent() {
@@ -142,7 +141,6 @@ function RootComponent() {
         </main>
         {!isAuthPage && <SiteFooter />}
         <Toaster />
-        <CursorTracker />
         <SocialSidebar />
       </div>
     </QueryClientProvider>

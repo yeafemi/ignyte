@@ -4,6 +4,10 @@ import { Calendar, CheckCircle2, MessageSquare, Send, Clock, User, Building2, Ma
 import { useSection } from "@/lib/content";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/booking")({
   component: BookingPage,
@@ -42,7 +46,7 @@ function BookingPage() {
   };
 
   return (
-    <section className="relative overflow-hidden min-h-screen">
+    <section className="relative overflow-hidden min-h-screen bg-background text-foreground">
       <div className="absolute inset-0 [background:var(--gradient-radial-glow)] opacity-50" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(0,255,255,0.03)_0%,transparent_50%)]" />
 
@@ -71,7 +75,7 @@ function BookingPage() {
               <div className="space-y-6">
                 {b.benefits?.map((benefit, i) => (
                   <div key={i} className="flex gap-4 group">
-                    <div className="mt-1 h-6 w-6 flex items-center justify-center rounded-full bg-brand-cyan/10 text-brand-cyan transition-colors group-hover:bg-brand-cyan group-hover:text-white">
+                    <div className="mt-1 h-6 w-6 flex items-center justify-center rounded-full bg-brand-cyan/10 text-brand-cyan transition-colors">
                       <CheckCircle2 className="h-4 w-4" />
                     </div>
                     <p className="font-semibold text-foreground leading-snug">{benefit}</p>
@@ -80,7 +84,7 @@ function BookingPage() {
               </div>
             </div>
 
-            <div className="rounded-[2.5rem] border border-border/40 bg-card/40 p-8 backdrop-blur-sm">
+            <div className="rounded-[2.5rem] border border-border/40 bg-card/90 p-8">
               <div className="flex items-start gap-4">
                 <div className="h-12 w-12 flex items-center justify-center rounded-2xl bg-brand-magenta/10 text-brand-magenta shrink-0">
                   <MessageSquare className="h-6 w-6" />
@@ -100,7 +104,7 @@ function BookingPage() {
             <div className="absolute -inset-4 rounded-[3rem] bg-gradient-brand opacity-5 blur-3xl pointer-events-none" />
             <form
               onSubmit={handleSubmit}
-              className="relative rounded-[3rem] border border-border/40 bg-card/60 p-8 shadow-elegant backdrop-blur-xl md:p-12"
+              className="relative rounded-[3rem] border border-border/40 bg-card/90 p-8 shadow-elegant md:p-12 space-y-6"
             >
               {sent ? (
                 <div className="py-20 text-center animate-in fade-in zoom-in duration-500">
@@ -110,56 +114,148 @@ function BookingPage() {
                   <h3 className="font-display text-3xl font-bold">Booking Sent!</h3>
                   <p className="mt-4 text-muted-foreground">Thank you for your interest. We'll be in touch within 24 hours to confirm your consultation.</p>
                   <button 
+                    type="button"
                     onClick={() => setSent(false)}
-                    className="mt-10 text-sm font-bold uppercase tracking-widest text-brand-cyan hover:underline"
+                    className="mt-10 text-sm font-bold uppercase tracking-widest text-brand-cyan hover:underline bg-transparent border-0 cursor-pointer"
                   >
                     Make another booking
                   </button>
                 </div>
               ) : (
-                <div className="space-y-8">
+                <div className="space-y-6">
                   <div className="grid gap-6 md:grid-cols-2">
-                    <InputField icon={User} label="Full Name" name="full_name" placeholder="e.g. John Doe" />
-                    <InputField icon={Building2} label="Company / Brand" name="company" placeholder="Organization Name" />
+                    <div className="space-y-2">
+                      <Label htmlFor="full_name" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Full Name</Label>
+                      <div className="relative">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          id="full_name"
+                          name="full_name"
+                          type="text"
+                          required 
+                          placeholder="e.g. John Doe"
+                          className="pl-12 h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="company" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Company / Brand</Label>
+                      <div className="relative">
+                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          id="company"
+                          name="company"
+                          type="text"
+                          required 
+                          placeholder="Organization Name"
+                          className="pl-12 h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                        />
+                      </div>
+                    </div>
                   </div>
+
                   <div className="grid gap-6 md:grid-cols-2">
-                    <InputField icon={Mail} label="Email Address" name="email" type="email" placeholder="john@example.com" />
-                    <InputField icon={Phone} label="Phone Number" name="phone" type="tel" placeholder="+233 xx xxx xxxx" />
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Email Address</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          id="email"
+                          name="email"
+                          type="email"
+                          required 
+                          placeholder="john@example.com"
+                          className="pl-12 h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Phone Number</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          required 
+                          placeholder="+233 xx xxx xxxx"
+                          className="pl-12 h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                        />
+                      </div>
+                    </div>
                   </div>
+
                   <div className="grid gap-6 md:grid-cols-2">
-                    <SelectField label="Service of Interest" name="service" options={[
-                      "Website Development",
-                      "Meta Configuration",
-                      "Video Advertisements",
-                      "Graphic Design",
-                      "Brand Identity",
-                      "Website Maintenance"
-                    ]} />
-                    <InputField icon={Calendar} label="Preferred Date" name="preferred_date" type="date" />
+                    <div className="space-y-2">
+                      <Label htmlFor="service" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Service of Interest</Label>
+                      <select 
+                        id="service"
+                        name="service"
+                        required
+                        defaultValue=""
+                        className="flex h-14 w-full rounded-2xl border border-border/40 bg-background/40 px-5 py-4 text-sm font-medium text-foreground focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all appearance-none cursor-pointer"
+                      >
+                        <option value="" disabled className="bg-background text-foreground">Select an option</option>
+                        {[
+                          "Website Development",
+                          "Meta Configuration",
+                          "Video Advertisements",
+                          "Graphic Design",
+                          "Brand Identity",
+                          "Website Maintenance"
+                        ].map(opt => <option key={opt} value={opt} className="bg-background text-foreground">{opt}</option>)}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="preferred_date" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Preferred Date</Label>
+                      <div className="relative">
+                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          id="preferred_date"
+                          name="preferred_date"
+                          type="date"
+                          className="pl-12 h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <SelectField label="Preferred Meeting Method" name="meeting_method" options={["Google Meet", "Phone Call", "WhatsApp Audio/Video", "In-person"]} />
+
+                  <div className="space-y-2">
+                    <Label htmlFor="meeting_method" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Preferred Meeting Method</Label>
+                    <select 
+                      id="meeting_method"
+                      name="meeting_method"
+                      required
+                      defaultValue=""
+                      className="flex h-14 w-full rounded-2xl border border-border/40 bg-background/40 px-5 py-4 text-sm font-medium text-foreground focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled className="bg-background text-foreground">Select an option</option>
+                      {["Google Meet", "Phone Call", "WhatsApp Audio/Video", "In-person"].map(opt => (
+                        <option key={opt} value={opt} className="bg-background text-foreground">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
                   
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-muted-foreground uppercase tracking-widest">Project Description</label>
-                    <textarea 
+                  <div className="space-y-2">
+                    <Label htmlFor="description" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Project Description</Label>
+                    <Textarea 
+                      id="description"
                       name="description"
                       rows={4} 
                       required 
                       placeholder="Briefly describe your project goals..."
-                      className="w-full rounded-2xl border border-border/40 bg-background/50 px-5 py-4 text-sm focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all placeholder:text-muted-foreground/30 resize-none" 
+                      className="w-full rounded-2xl border border-border/40 bg-background/40 px-5 py-4 text-sm focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all placeholder:text-muted-foreground/30 resize-none min-h-[120px] text-foreground" 
                     />
                   </div>
 
-                  <button 
+                  <Button 
                     type="submit" 
                     disabled={submitting}
-                    className="group relative w-full overflow-hidden rounded-full bg-gradient-brand px-8 py-5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-glow transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                    className="w-full h-14 rounded-full bg-gradient-brand text-primary-foreground font-black text-sm uppercase tracking-widest shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-3">
-                      {submitting ? "Submitting..." : "Confirm Consultation Booking"}
-                      <Send className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                    </span>
-                  </button>
+                    {submitting ? "Submitting..." : "Confirm Consultation Booking"}
+                    <Send className="ml-2 h-4 w-4" />
+                  </Button>
                 </div>
               )}
             </form>
@@ -167,41 +263,5 @@ function BookingPage() {
         </div>
       </div>
     </section>
-  );
-}
-
-function InputField({ label, name, placeholder, type = "text", icon: Icon }: { label: string; name: string; placeholder?: string; type?: string; icon: any }) {
-  return (
-    <div className="group/field">
-      <label className="mb-2 block text-sm font-semibold text-muted-foreground uppercase tracking-widest transition-colors group-focus-within/field:text-brand-cyan">
-        {label}
-      </label>
-      <div className="relative">
-        <Icon className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within/field:text-brand-cyan" />
-        <input 
-          name={name}
-          type={type} 
-          required 
-          placeholder={placeholder}
-          className="w-full rounded-2xl border border-border/40 bg-background/50 pl-12 pr-5 py-4 text-sm focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all placeholder:text-muted-foreground/30" 
-        />
-      </div>
-    </div>
-  );
-}
-
-function SelectField({ label, name, options }: { label: string; name: string; options: string[] }) {
-  return (
-    <div className="group/field">
-      <label className="mb-2 block text-sm font-semibold text-muted-foreground uppercase tracking-widest transition-colors group-focus-within/field:text-brand-cyan">{label}</label>
-      <select 
-        name={name}
-        required
-        className="w-full rounded-2xl border border-border/40 bg-background/50 px-5 py-4 text-sm focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all appearance-none cursor-pointer"
-      >
-        <option value="" disabled selected>Select an option</option>
-        {options.map(opt => <option key={opt} value={opt} className="bg-background text-foreground">{opt}</option>)}
-      </select>
-    </div>
   );
 }

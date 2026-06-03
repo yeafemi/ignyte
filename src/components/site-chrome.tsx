@@ -31,7 +31,7 @@ export function SiteNav() {
               to={l.to}
               className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{ className: "text-foreground" }}
-              activeOptions={{ exact: l.to === "/" }}
+              activeOptions={{ exact: (l.to as string) === "/" }}
             >
               {l.label}
             </Link>
@@ -75,7 +75,7 @@ export function SiteNav() {
                 onClick={() => setOpen(false)}
                 className="py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
                 activeProps={{ className: "text-foreground" }}
-                activeOptions={{ exact: l.to === "/" }}
+                activeOptions={{ exact: (l.to as string) === "/" }}
               >
                 {l.label}
               </Link>

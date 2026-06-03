@@ -4,6 +4,10 @@ import { Mail, MapPin, Phone, Send, Clock, Building2, Share2, Facebook, Instagra
 import { useSection } from "@/lib/content";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
@@ -40,7 +44,7 @@ function ContactPage() {
   };
 
   return (
-    <section className="relative overflow-hidden min-h-screen">
+    <section className="relative overflow-hidden min-h-screen bg-background text-foreground">
       <div className="absolute inset-0 [background:var(--gradient-radial-glow)] opacity-50" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(255,0,255,0.03)_0%,transparent_50%)]" />
 
@@ -66,7 +70,7 @@ function ContactPage() {
                 </div>
                 Office Information
               </h2>
-              <div className="rounded-3xl border border-border/40 bg-card/40 p-8 backdrop-blur-sm">
+              <div className="rounded-3xl border border-border/40 bg-card/90 p-8">
                 <p className="text-xl font-bold mb-6 text-foreground">{b.name} {b.tagline}</p>
                 <div className="space-y-6">
                   <ContactItem 
@@ -102,7 +106,7 @@ function ContactPage() {
                 </div>
                 Connect With Us
               </h2>
-              <div className="rounded-3xl border border-border/40 bg-card/40 p-8 backdrop-blur-sm">
+              <div className="rounded-3xl border border-border/40 bg-card/90 p-8">
                 <p className="text-muted-foreground leading-relaxed mb-8">
                   {c.socialIntro}
                 </p>
@@ -122,7 +126,7 @@ function ContactPage() {
             <div className="absolute -inset-4 rounded-[3rem] bg-gradient-brand opacity-5 blur-3xl pointer-events-none" />
             <form
               onSubmit={handleSubmit}
-              className="relative rounded-[3rem] border border-border/40 bg-card/60 p-8 shadow-elegant backdrop-blur-xl md:p-12"
+              className="relative rounded-[3rem] border border-border/40 bg-card/90 p-8 shadow-elegant md:p-12 space-y-6"
             >
               {sent ? (
                 <div className="py-20 text-center animate-in fade-in zoom-in duration-500">
@@ -132,8 +136,9 @@ function ContactPage() {
                   <h3 className="font-display text-3xl font-bold">Message Sent!</h3>
                   <p className="mt-4 text-muted-foreground">Thank you for reaching out. Our team will get back to you shortly.</p>
                   <button 
+                    type="button"
                     onClick={() => setSent(false)}
-                    className="mt-10 text-sm font-bold uppercase tracking-widest text-brand-cyan hover:underline"
+                    className="mt-10 text-sm font-bold uppercase tracking-widest text-brand-cyan hover:underline bg-transparent border-0 cursor-pointer"
                   >
                     Send another message
                   </button>
@@ -141,33 +146,72 @@ function ContactPage() {
               ) : (
                 <div className="space-y-6">
                   <div className="grid gap-6 md:grid-cols-2">
-                    <InputField label="Full Name" name="full_name" placeholder="e.g. John Doe" />
-                    <InputField label="Email Address" name="email" type="email" placeholder="john@example.com" />
+                    <div className="space-y-2">
+                      <Label htmlFor="full_name" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Full Name</Label>
+                      <Input 
+                        id="full_name"
+                        name="full_name"
+                        type="text"
+                        required 
+                        placeholder="e.g. John Doe"
+                        className="h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Email Address</Label>
+                      <Input 
+                        id="email"
+                        name="email"
+                        type="email"
+                        required 
+                        placeholder="john@example.com"
+                        className="h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                      />
+                    </div>
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
-                    <InputField label="Phone Number" name="phone" type="tel" placeholder="+233 xx xxx xxxx" />
-                    <InputField label="Subject" name="subject" placeholder="How can we help?" />
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Phone Number</Label>
+                      <Input 
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        required 
+                        placeholder="+233 xx xxx xxxx"
+                        className="h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="subject" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Subject</Label>
+                      <Input 
+                        id="subject"
+                        name="subject"
+                        type="text"
+                        required 
+                        placeholder="How can we help?"
+                        className="h-14 rounded-2xl bg-background/40 border-border/40 focus:border-brand-cyan/50 focus:ring-brand-cyan/10 transition-all font-medium text-foreground"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-muted-foreground uppercase tracking-widest">Message</label>
-                    <textarea 
+                  <div className="space-y-2">
+                    <Label htmlFor="message" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Message</Label>
+                    <Textarea 
+                      id="message"
                       name="message"
                       rows={5} 
                       required 
                       placeholder="Tell us about your project or enquiry..."
-                      className="w-full rounded-2xl border border-border/40 bg-background/50 px-5 py-4 text-sm focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all placeholder:text-muted-foreground/30 resize-none" 
+                      className="w-full rounded-2xl border border-border/40 bg-background/40 px-5 py-4 text-sm focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all placeholder:text-muted-foreground/30 resize-none min-h-[150px] text-foreground" 
                     />
                   </div>
-                  <button 
+                  <Button 
                     type="submit" 
                     disabled={submitting}
-                    className="group relative w-full overflow-hidden rounded-full bg-gradient-brand px-8 py-5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-glow transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                    className="w-full h-14 rounded-full bg-gradient-brand text-primary-foreground font-black text-sm uppercase tracking-widest shadow-glow hover:scale-[1.02] active:scale-[0.98] transition-all"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-3">
-                      {submitting ? "Sending..." : "Send Message"}
-                      <Send className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                    </span>
-                  </button>
+                    {submitting ? "Sending..." : "Send Message"}
+                    <Send className="ml-2 h-4 w-4" />
+                  </Button>
                 </div>
               )}
             </form>
@@ -207,20 +251,5 @@ function SocialLink({ icon: Icon, href, color }: { icon: any; href: string; colo
     >
       <Icon className="h-5 w-5" />
     </a>
-  );
-}
-
-function InputField({ label, name, placeholder, type = "text" }: { label: string; name: string; placeholder: string; type?: string }) {
-  return (
-    <div>
-      <label className="mb-2 block text-sm font-semibold text-muted-foreground uppercase tracking-widest">{label}</label>
-      <input 
-        name={name}
-        type={type} 
-        required 
-        placeholder={placeholder}
-        className="w-full rounded-2xl border border-border/40 bg-background/50 px-5 py-4 text-sm focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan/20 transition-all placeholder:text-muted-foreground/30" 
-      />
-    </div>
   );
 }

@@ -1,0 +1,49 @@
+#ignyte-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0f;
+  gap: 24px;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+#ignyte-loader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes ignyte-spin {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.15); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes ignyte-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(6,182,212,0.5), 0 0 24px rgba(6,182,212,0.2); }
+  50%       { box-shadow: 0 0 0 16px rgba(6,182,212,0), 0 0 40px rgba(6,182,212,0.4); }
+}
+
+#ignyte-logo-spin {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: contain;
+  animation:
+    ignyte-spin 1.2s cubic-bezier(0.68,-0.55,0.27,1.55) infinite,
+    ignyte-glow 1.2s ease-in-out infinite;
+}
+
+#ignyte-loader-label {
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #06b6d4, #ec4899, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
